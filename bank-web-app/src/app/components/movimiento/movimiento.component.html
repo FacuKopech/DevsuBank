@@ -1,0 +1,29 @@
+<div class="div-header">
+  <p>Movimientos</p>
+  <button (click)="openModal()">Crear Movimiento</button>
+</div>
+
+<div class="div-date-controls">
+  <label>Desde:</label>
+  <input type="date" [(ngModel)]="fechaInicio">
+
+  <label>Hasta:</label>
+  <input type="date" [(ngModel)]="fechaFin">
+</div>
+
+<app-table [data]="movimientos" [columns]="['fecha', 'tipoMovimiento', 'valor', 'saldo', 'cuenta.numeroCuenta']"
+  [headers]="['Fecha', 'Tipo Movimiento', 'Valor', 'Saldo', 'Cuenta']"
+  [filters]="{fechaInicio: fechaInicio, fechaFin: fechaFin }" (edit)="openEditModal($event)"
+  (delete)="openDeleteModal($event)">
+</app-table>
+<app-modal-form *ngIf="showModal" [title]="modalTitle" [fields]="formFields" [model]="movimiento"
+  (save)="handleClientSave($event)" (close)="showModal = false" />
+
+<app-mdoal-confirmation *ngIf="showConfirmModal" [title]="'Eliminar Movimiento'"
+  [text]="'¿Estás seguro de que deseas eliminar el movimiento con ID ' + movimiento?.id + '?'"
+  (confirm)="confirmDelete()" (cancel)="cancelDelete()">
+</app-mdoal-confirmation>
+
+<app-modal-message *ngIf="showMessageModal" [title]="messageTitle" [message]="message" [isError]="isError"
+  (close)="showMessageModal = false">
+</app-modal-message>

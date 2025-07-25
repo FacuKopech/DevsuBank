@@ -1,0 +1,40 @@
+.modal-backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #3f535b;
+    padding: 2rem;
+    border-radius: 8px;
+    min-width: 320px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    flex-wrap: wrap;
+    height: fit-content;
+}
+
+.div-field {
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+}
+
+.div-bottom-btns {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 16px;
+}

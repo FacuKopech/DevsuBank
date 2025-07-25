@@ -1,0 +1,47 @@
+p {
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+form {
+    width: 520px;
+}
+
+.div-controls-report {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.div-select-cliente {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.div-date-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+.div-btn-report {
+    display: flex;
+    justify-content: center;
+}
+
+.custom-table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: white;
+    color: black;
+    font-size: 12px;
+}
+
+.custom-table th,
+.custom-table td {
+    border: 1px solid #333;
+    padding: 6px;
+    text-align: left;
+}

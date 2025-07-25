@@ -1,0 +1,15 @@
+C:\Users\facuk\source\repos\BankApi\DTOs\bin\Debug\net6.0\DTOs.deps.json
+C:\Users\facuk\source\repos\BankApi\DTOs\bin\Debug\net6.0\DTOs.dll
+C:\Users\facuk\source\repos\BankApi\DTOs\bin\Debug\net6.0\DTOs.pdb
+C:\Users\facuk\source\repos\BankApi\DTOs\bin\Debug\net6.0\Model.dll
+C:\Users\facuk\source\repos\BankApi\DTOs\bin\Debug\net6.0\Model.pdb
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.csproj.AssemblyReference.cache
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.AssemblyInfoInputs.cache
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.AssemblyInfo.cs
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.csproj.CoreCompileInputs.cache
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.csproj.CopyComplete
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.dll
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\refint\DTOs.dll
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\DTOs.pdb
+C:\Users\facuk\source\repos\BankApi\DTOs\obj\Debug\net6.0\ref\DTOs.dll

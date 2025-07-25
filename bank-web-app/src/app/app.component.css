@@ -1,0 +1,52 @@
+.top-navbar {
+    background-color: #415962;
+    color: white;
+    padding: 1rem 2rem;
+    font-weight: bold;
+
+}
+
+.sidebar {
+    width: 130px;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h3 {
+    text-decoration: underline;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar li {
+    margin: 10px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+    font-weight: 400;
+}
+
+.div-link {
+    margin-left: 8px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}

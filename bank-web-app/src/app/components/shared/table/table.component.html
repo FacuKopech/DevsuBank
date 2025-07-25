@@ -1,0 +1,48 @@
+<div class="table-wrapper">
+  <div class="div-controls">
+    <input [(ngModel)]="searchTerm" placeholder="Buscar" class="search-input" />
+    <button class="search-btn">Buscar</button>
+  </div>
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th *ngFor="let header of headers">{{ header }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of filteredData">
+        <td *ngFor="let col of columns">
+          <ng-container [ngSwitch]="col">
+            <ng-container *ngSwitchCase="'estado'">
+              {{ getEstadoLabel(item[col]) }}
+            </ng-container>
+            <ng-container *ngSwitchCase="'tipoCuenta'">
+              {{ item[col] === 0 ? 'Ahorro' : item[col] === 1 ? 'Corriente' : item[col] === 2 ? 'Sueldo' : '' }}
+            </ng-container>
+            <ng-container *ngSwitchCase="'tipoMovimiento'">
+              {{ item[col] === 0 ? 'Desposito' :
+              item[col] === 1 ? 'Extraccion' :
+              item[col] === 2 ? 'Transferencia Entrante' :
+              item[col] === 3 ? 'Transferencia Saliente' :
+              item[col] === 4 ? 'Debito Automatico' :
+              item[col] === 5 ? 'Pago Debito' :
+              item[col] === 6 ? 'Pago Credito' :
+              item[col] === 7 ? 'Compra QR' :
+              item[col] === 8 ? 'Pago Servicios' : '' }}
+            </ng-container>
+            <ng-container *ngSwitchCase="'fecha'">
+              {{ getValue(item, col) | date:'dd-MM-yyyy HH:mm' }}
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              {{ getValue(item, col) }}
+            </ng-container>
+          </ng-container>
+        </td>
+        <td>
+          <button (click)="edit.emit(item)">Modificar</button>
+          <button (click)="delete.emit(item)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

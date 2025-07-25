@@ -1,0 +1,17 @@
+.div-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.div-header button{
+    display: flex;
+    align-self: center;
+}
+
+p {
+    font-size: xx-large;
+    font-weight: bold;
+    margin-top: inherit;
+    margin-bottom: 8px;
+}

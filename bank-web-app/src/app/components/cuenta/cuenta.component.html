@@ -1,0 +1,19 @@
+<div class="div-header">
+  <p>Cuentas</p>
+  <button (click)="openModal()">Crear Cuenta</button>
+</div>
+<app-table [data]="cuentas" [columns]="['numeroCuenta', 'tipoCuenta', 'saldoInicial', 'estado', 'cliente.nombre']"
+  [headers]="['Nro. Cuenta', 'Tipo Cuenta', 'Saldo Inicial', 'Estado', 'Cliente']" (edit)="openEditModal($event)"
+  (delete)="openDeleteModal($event)">
+</app-table>
+<app-modal-form *ngIf="showModal" [title]="modalTitle" [fields]="formFields" [model]="cuenta"
+  (save)="handleClientSave($event)" (close)="showModal = false" />
+
+<app-mdoal-confirmation *ngIf="showConfirmModal" [title]="'Eliminar Cuenta'"
+  [text]="'¿Estás seguro de que deseas eliminar la cuenta ' + cuenta?.numeroCuenta + '?'" (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()">
+</app-mdoal-confirmation>
+
+<app-modal-message *ngIf="showMessageModal" [title]="messageTitle" [message]="message" [isError]="isError"
+  (close)="showMessageModal = false">
+</app-modal-message>

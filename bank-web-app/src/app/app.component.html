@@ -1,0 +1,45 @@
+<header class="top-navbar">
+  <h3>Devsu Bank</h3>
+</header>
+<main class="main">
+  <nav class="sidebar">
+    <h3>Main Menu</h3>
+    <ul>
+      <li>
+        <i class="bi bi-house-door-fill"></i>
+        <div class="div-link">
+          <a routerLink="/">Inicio</a>
+        </div>
+      </li>
+      <li>
+        <i class="bi bi-person-fill"></i>
+        <div class="div-link">
+          <a routerLink="/clientes">Clientes</a>
+        </div>
+      </li>
+      <li>
+        <i class="bi bi-person-bounding-box"></i>
+        <div class="div-link">
+          <a routerLink="/cuentas">Cuentas</a>
+        </div>
+      </li>
+      <li>
+        <i class="bi bi-cash-coin"></i>
+        <div class="div-link">
+          <a routerLink="/movimientos">Movimientos</a>
+        </div>
+      </li>
+      <li>
+        <i class="bi bi-file-earmark-bar-graph"></i>
+        <div class="div-link">
+          <a routerLink="/reportes">Reportes</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <app-spinner *ngIf="isLoading"></app-spinner>
+    <router-outlet></router-outlet>
+  </div>
+</main>

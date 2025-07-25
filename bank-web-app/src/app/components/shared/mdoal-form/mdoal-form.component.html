@@ -1,0 +1,28 @@
+<div class="modal-backdrop">
+  <div class="modal">
+    <h2>{{ title }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngFor="let field of fields" class="div-field">
+        <label>{{ field.label }}</label>
+        <ng-container *ngIf="field.options; else textInput">
+          <select [formControlName]="field.key">
+            <option *ngFor="let opt of field.options" [ngValue]="opt.value">{{ opt.label }}</option>
+          </select>
+        </ng-container>
+        <ng-template #textInput>
+          <input [type]="field.type" [formControlName]="field.key" />
+        </ng-template>
+        <div *ngIf="form.get(field.key)?.invalid && form.get(field.key)?.touched" style="color: red;">
+          <ng-container *ngIf="form.get(field.key)?.errors?.['required']">Required</ng-container>
+          <ng-container *ngIf="form.get(field.key)?.errors?.['min']">Must be at least 18</ng-container>
+          <ng-container *ngIf="form.get(field.key)?.errors?.['max']">Must be at most 99</ng-container>
+        </div>        
+      </div>
+      <div class="div-bottom-btns">
+        <button type="submit" [disabled]="form.invalid">Save</button>
+        <button type="button" (click)="onCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

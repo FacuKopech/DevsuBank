@@ -1,0 +1,57 @@
+<div class="report-container">
+  <p>Generar Reporte</p>
+
+  <form (ngSubmit)="generateReport()">
+    <div class="div-controls-report">
+      <div class="div-select-cliente">
+        <label for="clienteId">Client:</label>
+        <select id="clienteId" [(ngModel)]="reportRequest.clienteId" name="clienteId" required>
+          <option *ngFor="let client of clients" [value]="client.id">{{ client.nombre }}</option>
+        </select>
+      </div>
+      <div class="div-date-controls">
+        <label for="fechaInicio">Inicio:</label>
+        <input type="date" id="fechaInicio" [(ngModel)]="reportRequest.fechaInicio" name="fechaInicio" required />
+
+        <label for="fechaFin">Fin:</label>
+        <input type="date" id="fechaFin" [(ngModel)]="reportRequest.fechaFin" name="fechaFin" required />
+      </div>
+    </div>
+    <div class="div-btn-report">
+      <button type="submit">Generar Reporte</button>
+    </div>
+  </form>
+
+  <div *ngIf="report">
+    <h3>Reporte generado</h3>
+    <div #reportTable>
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Cuenta Nro.</th>
+            <th>Saldo</th>
+            <th>Total Débitos</th>
+            <th>Total Créditos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let resumen of report.resumenes">
+            <td>{{ nombreCliente }}</td>
+            <td>{{ resumen.numeroCuenta }}</td>
+            <td>{{ resumen.saldo | currency:'USD' }}</td>
+            <td>{{ resumen.totalDebitos }}</td>
+            <td>{{ resumen.totalCreditos }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button (click)="exportToPDF()">Exportar a PDF</button>
+  </div>
+</div>
+
+
+<app-modal-message *ngIf="showMessageModal" [title]="messageTitle" [message]="message" [isError]="isError"
+  (close)="showMessageModal = false">
+</app-modal-message>
