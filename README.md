@@ -14,4 +14,4 @@
 
 ## Notes
 - Ensure SQL Server is running before launching the backend.
-- Spinner, modals, and Bootstrap are implemented.
+- Spinner, modals, Bootstrap, Design Patterns and more has been implemented
