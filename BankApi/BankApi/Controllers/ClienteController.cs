@@ -4,6 +4,8 @@ using Model;
 using Microsoft.AspNetCore.Identity;
 using DTOs;
 using BankApi.Services.Cliente;
+using BankApi.Commands.Clientes;
+using BankApi.Commands.Movimientos;
 
 namespace BankApi.Controllers
 {
@@ -12,14 +14,17 @@ namespace BankApi.Controllers
     public class ClienteController : ControllerBase
     {
         private readonly IClienteRepository _clientRepository;
-        private readonly IClienteValidator _clientValidator;
-        private readonly PasswordHasher<Cliente> _passwordHasher;
-
-        public ClienteController(IClienteRepository clientRepository, IClienteValidator clientValidator, PasswordHasher<Cliente> passwordHasher)
+        private readonly ICreateClientCommand _createClientCommands;
+        private readonly IUpdateClientCommand _updateClientCommands;
+        private readonly IDeleteClientCommand _deleteClientCommands;
+        
+        public ClienteController(IClienteRepository clientRepository, ICreateClientCommand createClientCommands,
+            IUpdateClientCommand updateClientCommands, IDeleteClientCommand deleteClientCommands)
         {
             _clientRepository = clientRepository;
-            _clientValidator = clientValidator;
-            _passwordHasher = passwordHasher;
+            _createClientCommands = createClientCommands;
+            _updateClientCommands = updateClientCommands;
+            _deleteClientCommands = deleteClientCommands;
         }
 
         [HttpGet]
@@ -57,70 +62,40 @@ namespace BankApi.Controllers
         [Route("[action]")]
         public async Task<ActionResult<bool>> CreateClient([FromBody] Cliente client)
         {
-            bool isUnique = await _clientValidator.isFildUniqueAsync(client.Identificacion);
-            if(isUnique)
+            var result = await _createClientCommands.HandleAsync(client);
+
+            if (!result.Success)
             {
-                client.Id = Guid.NewGuid();
-                client.Contraseña = _passwordHasher.HashPassword(client, client.Contraseña);
-
-                bool result = await _clientRepository.AddEntityAsync(client);
-
-                if (result)
-                {
-                    return CreatedAtAction(nameof(GetClient), new { id = client.Id }, client);
-                }
-
-                return BadRequest("Failed to create the client.");
+                return BadRequest(result.Message);
             }
-            return BadRequest("Client already exists.");
+
+            return CreatedAtAction(nameof(GetClient), new { id = result.newClient?.Id }, result.newClient);
         }
 
         [HttpPatch]
         [Route("[action]")]
         public async Task<ActionResult<bool>> UpdateClient([FromBody] ClienteDto client)
         {
-            Cliente? clientFound = await _clientRepository.GetEntityAsync(client.Id);
-            if (clientFound == null)
+            var result = await _updateClientCommands.HandleAsync(client);
+
+            if (!result.Success)
             {
-                return NotFound("Client not found.");
+                return BadRequest(result.Message);
             }
 
-            if (clientFound.Identificacion != client.Identificacion)
-            {
-                bool isUnique = await _clientValidator.isFildUniqueAsync(client.Identificacion);
-                if (!isUnique)
-                {
-                    return BadRequest("Client already exists.");
-                }
-                clientFound.Identificacion = client.Identificacion;
-            }
-           
-            clientFound.Nombre = client.Nombre;
-            clientFound.Genero = client.Genero;
-            clientFound.Edad = client.Edad;
-            clientFound.Direccion = client.Direccion;
-            clientFound.Telefono = client.Telefono;
-            clientFound.Estado = client.Estado;
-
-            bool result = await _clientRepository.ModifyEntityAsync(clientFound);
-
-            if (result)
-            {
-                return Ok(result);
-            }
-            return BadRequest("Failed to modify the client.");  
+            return Ok(true);
         }
 
         [HttpDelete]
         [Route("[action]/{id}")]
         public async Task<ActionResult<bool>> DeleteClient(Guid id)
         {
-            bool result = await _clientRepository.DeleteEntityAsync(id);
-            if (result)
+            var result = await _deleteClientCommands.HandleAsync(id);
+            if (!result.Success)
             {
-                return Ok(result);
+                return BadRequest(result.Message);
             }
-            return BadRequest("Failed to delete the client.");
+            return Ok(true);
         }
     }
 }

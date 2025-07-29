@@ -9,6 +9,7 @@ import { TableComponent } from '../shared/table/table.component';
 import { CommonModule } from '@angular/common';
 import { MdoalConfirmationComponent } from '../shared/mdoal-confirmation/mdoal-confirmation.component';
 import { ModalMessageComponent } from '../shared/modal-message/modal-message.component';
+import { ResponseHandlerService } from '../../services/response-handler-service/response-handler.service';
 
 @Component({
   selector: 'app-cuenta',
@@ -18,17 +19,13 @@ import { ModalMessageComponent } from '../shared/modal-message/modal-message.com
   styleUrl: './cuenta.component.css'
 })
 export class CuentaComponent {
-  constructor(private cuentaService: CuentaService, private clienteService: ClienteService) { }
+  constructor(private cuentaService: CuentaService, private clienteService: ClienteService, public responseHandler: ResponseHandlerService) { }
   showModal = false;
   showConfirmModal = false;
   cuenta: Cuenta = {} as Cuenta;
   cuentas: Cuenta[] = [];
   clientes: Cliente[] = [];
   modalTitle: string = '';
-  message: string = '';
-  messageTitle: string = '';
-  showMessageModal: boolean = false;
-  isError: boolean = false;
 
   formFields = [
     { key: 'numeroCuenta', label: 'Nro. Cuenta', type: 'number' },
@@ -50,13 +47,6 @@ export class CuentaComponent {
       key: 'clienteId', label: 'Cliente', type: 'select', options: [] as { label: string; value: string }[]
     }
   ];
-
-  handleResponse(result: { success: boolean, message: string }) {
-    this.messageTitle = result.success ? 'Excelente' : 'Error';
-    this.message = result.message;
-    this.isError = !result.success;
-    this.showMessageModal = true;
-  }
 
   ngOnInit(): void {
     this.cuentaService.GetAllAccounts().pipe(
@@ -105,10 +95,10 @@ export class CuentaComponent {
       next: () => {
         this.cuentas = this.cuentas.filter(c => c.id !== this.cuenta?.id);
         this.showConfirmModal = false;
-        this.handleResponse({ success: true, message: 'Cuenta eliminada correctamente' });
+        this.responseHandler.handleResponse({ success: true, message: 'Cuenta eliminada correctamente' });
       },
       error: err => {
-        this.handleResponse({ success: false, message: err?.error || 'Error al eliminar la cuenta' });
+        this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error al eliminar la cuenta' });
       }
     });
   }
@@ -117,17 +107,17 @@ export class CuentaComponent {
     this.showConfirmModal = false;
   }
 
-  handleClientSave(cuenta: Cuenta) {
+  handleAccountSave(cuenta: Cuenta) {
     const accountReceived = { ...this.cuenta, ...cuenta };
     if (accountReceived.id == undefined) {
       this.cuentaService.CreateAccount(accountReceived).subscribe({
         next: data => {
           this.cuentas.push(data);
           this.showModal = false;
-          this.handleResponse({ success: true, message: 'Cuenta creada correctamente' });
+          this.responseHandler.handleResponse({ success: true, message: 'Cuenta creada correctamente' });
         },
         error: err => {
-          this.handleResponse({ success: false, message: err?.error || 'Error al crear la cuenta' });
+          this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error al crear la cuenta' });
         }
       });
     } else {
@@ -138,10 +128,10 @@ export class CuentaComponent {
             this.cuentas[index] = accountReceived;
           }
           this.showModal = false;
-          this.handleResponse({ success: true, message: 'Cuenta modificada correctamente' });
+          this.responseHandler.handleResponse({ success: true, message: 'Cuenta modificada correctamente' });
         },
         error: err => {
-          this.handleResponse({ success: false, message: err?.error || 'Error al modificar la cuenta' });
+          this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error al modificar la cuenta' });
         }
       });
     }

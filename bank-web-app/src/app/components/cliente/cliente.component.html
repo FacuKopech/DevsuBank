@@ -11,10 +11,11 @@
   (save)="handleClientSave($event)" (close)="showModal = false" />
 
 <app-mdoal-confirmation *ngIf="showConfirmModal" [title]="'Eliminar Cliente'"
-  [text]="'¿Estás seguro de que deseas eliminar el cliente ' + cliente?.nombre + '?'" (confirm)="confirmDelete()"
+  [text]="'¿Estás seguro de que deseas eliminar el cliente ' + cliente.nombre + '?'" (confirm)="confirmDelete()"
   (cancel)="cancelDelete()">
 </app-mdoal-confirmation>
 
-<app-modal-message *ngIf="showMessageModal" [title]="messageTitle" [message]="message" [isError]="isError"
-  (close)="showMessageModal = false">
+<app-modal-message
+  *ngIf="(responseHandler.showMessageModal$ | async)"
+  (close)="responseHandler.closeMessageModal()">
 </app-modal-message>

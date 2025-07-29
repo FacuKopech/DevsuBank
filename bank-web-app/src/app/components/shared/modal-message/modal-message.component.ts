@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ResponseHandlerService } from '../../../services/response-handler-service/response-handler.service';
 
 @Component({
   selector: 'app-modal-message',
@@ -12,9 +13,10 @@ export class ModalMessageComponent {
   @Input() title: string = '';
   @Input() message: string = '';
   @Input() isError: boolean = false;
-  @Output() close = new EventEmitter<void>();
+
+  constructor(public responseHandler: ResponseHandlerService) { }
 
   closeModal() {
-    this.close.emit();
+    this.responseHandler.closeMessageModal();
   }
 }

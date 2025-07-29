@@ -1,4 +1,6 @@
-﻿using BankApi.Services.Cuenta;
+﻿using BankApi.Commands.Clientes;
+using BankApi.Commands.Cuentas;
+using BankApi.Services.Cuenta;
 using Data.Contracts;
 using Data.Repositories;
 using DTOs;
@@ -13,14 +15,20 @@ namespace BankApi.Controllers
     public class CuentaController : ControllerBase
     {
         private readonly ICuentaRepository _accountRepository;
-        private readonly ICuentaValidator _accountValidator;
         private readonly IClienteRepository _clientRepository;
+        private readonly ICreateAccountCommand _createAccountCommands;
+        private readonly IUpdateAccountCommand _updateAccountCommands;
+        private readonly IDeleteAccountCommand _deleteAccountCommands;
 
-        public CuentaController(ICuentaRepository accountRepository, ICuentaValidator accountValidator,IClienteRepository clientRepository)
+        public CuentaController(ICuentaRepository accountRepository, IClienteRepository clientRepository, 
+            ICreateAccountCommand createAccountCommands, IUpdateAccountCommand updateAccountCommands, 
+            IDeleteAccountCommand deleteAccountCommands)
         {
             _accountRepository = accountRepository;
-            _accountValidator = accountValidator;
             _clientRepository = clientRepository;
+            _createAccountCommands = createAccountCommands;
+            _updateAccountCommands = updateAccountCommands;
+            _deleteAccountCommands = deleteAccountCommands;
         }
 
         [HttpGet]
@@ -47,76 +55,27 @@ namespace BankApi.Controllers
         [Route("[action]")]
         public async Task<ActionResult<bool>> CreateAccount([FromBody] CuentaDto account)
         {
-            bool areUnique = await _accountValidator.AreFildsUniqueAsync(account);
-            if (areUnique)
-            {
-                Cliente? clientFound = await _clientRepository.GetEntityAsync(account.ClienteId);
-                if (clientFound != null)
-                {
-                    Cuenta newAccount = new Cuenta
-                    {
-                        Id = Guid.NewGuid(),
-                        NumeroCuenta = account.NumeroCuenta,
-                        TipoCuenta = account.TipoCuenta,
-                        SaldoInicial = account.SaldoInicial,
-                        Estado = account.Estado,
-                        ClienteId = clientFound.Id,
-                        Cliente = clientFound,
-                        Movimientos = new List<Movimiento>()
-                    };
-                    bool result = await _accountRepository.AddEntityAsync(newAccount);
+            var result = await _createAccountCommands.HandleAsync(account);
 
-                    if (result)
-                    {
-                        return CreatedAtAction(nameof(GetAccount), new { id = newAccount.Id }, newAccount);
-                    }
-                    return BadRequest("Failed to create account.");
-                }
-                return NotFound("Client not found.");
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
             }
-            return BadRequest("Account already exists.");
+
+            return CreatedAtAction(nameof(GetAccount), new { id = result.newAccount?.Id }, result.newAccount);
         }
 
         [HttpPatch]
         [Route("[action]")]
         public async Task<ActionResult<bool>> UpdateAccount([FromBody] CuentaDto account)
+        {
+            var result = await _updateAccountCommands.HandleAsync(account);
+
+            if (!result.Success)
             {
-            Cuenta? accountFound = await _accountRepository.GetEntityAsync(account.Id);
-            if (accountFound == null)
-            {
-                return NotFound("Account not found.");
+                return BadRequest(result.Message);
             }
-
-            if (accountFound.NumeroCuenta != account.NumeroCuenta)
-            {
-                bool areUnique = await _accountValidator.AreFildsUniqueAsync(account);
-                if (!areUnique)
-                {
-                    return BadRequest("Account already exists.");
-                }
-                accountFound.NumeroCuenta = account.NumeroCuenta;
-            }
-            
-            if (account.ClienteId != accountFound.ClienteId)
-            {
-                Cliente? clientFound = await _clientRepository.GetEntityAsync(account.ClienteId);
-                if (clientFound == null)
-                {
-                    return NotFound("Client not found.");
-                }
-
-                accountFound.ClienteId = clientFound.Id;
-                accountFound.Cliente = clientFound;
-            }
-
-            accountFound.TipoCuenta = account.TipoCuenta;
-            accountFound.SaldoInicial = account.SaldoInicial;
-            accountFound.Estado = account.Estado;
-
-            bool result = await _accountRepository.ModifyEntityAsync(accountFound);
-
-            return result ? Ok(result) : BadRequest("Failed to modify the account.");
-            
+            return Ok(true);
         }
 
 
@@ -124,12 +83,12 @@ namespace BankApi.Controllers
         [Route("[action]/{id}")]
         public async Task<ActionResult<bool>> DeleteAccount(Guid id)
         {
-            bool result = await _accountRepository.DeleteEntityAsync(id);
-            if (result)
+           var result = await _deleteAccountCommands.HandleAsync(id);
+            if (!result.Success)
             {
-                return Ok(result);
+                return BadRequest(result.Message);
             }
-            return BadRequest("Failed to delete account.");
+            return Ok(true);
         }
     }
 }

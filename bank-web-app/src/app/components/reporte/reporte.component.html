@@ -52,6 +52,7 @@
 </div>
 
 
-<app-modal-message *ngIf="showMessageModal" [title]="messageTitle" [message]="message" [isError]="isError"
-  (close)="showMessageModal = false">
+<app-modal-message
+  *ngIf="(responseHandler.showMessageModal$ | async)"
+  (close)="responseHandler.closeMessageModal()">
 </app-modal-message>

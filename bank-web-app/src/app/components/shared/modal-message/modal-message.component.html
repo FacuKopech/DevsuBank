@@ -1,8 +1,7 @@
 <div class="modal-overlay">
-    <div class="modal-box" [ngClass]="{ 'error': isError, 'success': !isError }">
-      <h2>{{ title }}</h2>
-      <p>{{ message }}</p>
-      <button (click)="closeModal()">Close</button>
-    </div>
+  <div class="modal-box" [ngClass]="{ 'error': (responseHandler.isError$ | async) }">
+    <h2>{{ responseHandler.messageTitle$ | async }}</h2>
+    <p>{{ responseHandler.message$ | async }}</p>
+    <button (click)="closeModal()">Close</button>
   </div>
-  
+</div>

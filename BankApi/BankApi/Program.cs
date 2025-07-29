@@ -1,4 +1,6 @@
+using BankApi.Commands.Clientes;
 using BankApi.Commands.Movimientos;
+using BankApi.Commands.Cuentas;
 using BankApi.Services.Cliente;
 using BankApi.Services.Cuenta;
 using Data; 
@@ -20,6 +22,12 @@ builder.Services.AddScoped<ICuentaValidator, CuentaValidator>();
 builder.Services.AddScoped<ICreateTransactionCommands, CreateTransactionCommandHandler>();
 builder.Services.AddScoped<IUpdateTransactionCommands, UpdateTransactionCommandHandler>();
 builder.Services.AddScoped<IDeleteTransactionCommands, DeleteTransactionCommandHandler>();
+builder.Services.AddScoped<ICreateClientCommand, CreateClientCommandHandler>();
+builder.Services.AddScoped<IUpdateClientCommand, UpdateClientCommandHandler>();
+builder.Services.AddScoped<IDeleteClientCommand, DeleteClientCommandHandler>();
+builder.Services.AddScoped<ICreateAccountCommand, CreateAccountCommandHandler>();
+builder.Services.AddScoped<IUpdateAccountCommand, UpdateAccountCommandHandler>();
+builder.Services.AddScoped<IDeleteAccountCommand, DeleteAccountCommandHandler>();
 builder.Services.AddScoped<PasswordHasher<Cliente>>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

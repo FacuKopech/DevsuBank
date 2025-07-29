@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { ModalMessageComponent } from '../shared/modal-message/modal-message.component';
+import { ResponseHandlerService } from '../../services/response-handler-service/response-handler.service';
 
 @Component({
   selector: 'app-reporte',
@@ -26,23 +27,13 @@ export class ReporteComponent implements OnInit {
   };
   report?: Reporte;
   nombreCliente?: string = '';
-  message: string = '';
-  messageTitle: string = '';
-  showMessageModal: boolean = false;
-  isError: boolean = false;
   @ViewChild('reportTable') reportTable!: ElementRef;
 
   constructor(
     private clienteService: ClienteService,
-    private reporteService: ReporteService
+    private reporteService: ReporteService,
+    public responseHandler: ResponseHandlerService
   ) { }
-
-  handleResponse(result: { success: boolean, message: string }) {
-    this.messageTitle = result.success ? 'Excelente' : 'Error';
-    this.message = result.message;
-    this.isError = !result.success;
-    this.showMessageModal = true;
-  }
 
   ngOnInit(): void {
     this.clienteService.GetAllClients().subscribe((data) => {
@@ -56,10 +47,10 @@ export class ReporteComponent implements OnInit {
       next: (report: Reporte) => {
         this.report = report;
         this.getNombreCliente(this.reportRequest.clienteId);
-        this.handleResponse({ success: true, message: 'Reporte generado correctamente' });
+        this.responseHandler.handleResponse({ success: true, message: 'Reporte generado correctamente' });
       },
       error: err => {
-        this.handleResponse({ success: false, message: err?.error || 'Error al generar reporte' });
+        this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error al generar reporte' });
       }
     });
   }

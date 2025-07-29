@@ -21,7 +21,7 @@ namespace BankApi.Controllers
 
         public MovimientoController(IMovimientoRepository transactionRepository, ICuentaRepository accountRepository,
             IUpdateTransactionCommands updateTransactionCommands, ICreateTransactionCommands createTransactionCommands,
-            IDeleteTransactionCommands deleteTransactionCommands)
+            IDeleteTransactionCommands deleteTransactionCommands)       
         {
             _transactionRepository = transactionRepository;
             _accountRepository = accountRepository;

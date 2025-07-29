@@ -10,6 +10,7 @@ import { Cuenta } from '../../interfaces/cuenta';
 import { concatMap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ModalMessageComponent } from '../shared/modal-message/modal-message.component';
+import { ResponseHandlerService } from '../../services/response-handler-service/response-handler.service';
 
 @Component({
   selector: 'app-movimiento',
@@ -19,7 +20,7 @@ import { ModalMessageComponent } from '../shared/modal-message/modal-message.com
   styleUrl: './movimiento.component.css'
 })
 export class MovimientoComponent {
-  constructor(private movimientoService: MovimientoService, private cuentaService: CuentaService) { }
+  constructor(private movimientoService: MovimientoService, private cuentaService: CuentaService, public responseHandler: ResponseHandlerService) { }
   showModal = false;
   showConfirmModal = false;
   movimiento: Movimiento = {} as Movimiento;
@@ -28,10 +29,6 @@ export class MovimientoComponent {
   modalTitle: string = '';
   fechaInicio: Date = new Date();
   fechaFin: Date = new Date();
-  message: string = '';
-  messageTitle: string = '';
-  showMessageModal: boolean = false;
-  isError: boolean = false;
 
   formFields = [
     {
@@ -52,13 +49,6 @@ export class MovimientoComponent {
       key: 'cuentaId', label: 'Cuenta', type: 'select', options: [] as { label: string; value: string }[]
     }
   ];
-
-  handleResponse(result: { success: boolean, message: string }) {
-    this.messageTitle = result.success ? 'Excelente' : 'Error';
-    this.message = result.message;
-    this.isError = !result.success;
-    this.showMessageModal = true;
-  }
 
   ngOnInit(): void {
     this.movimientoService.GetAllTransactions().pipe(
@@ -112,10 +102,10 @@ export class MovimientoComponent {
       next: () => {
         this.movimientos = this.movimientos.filter(c => c.id !== this.movimiento?.id);
         this.showConfirmModal = false;
-        this.handleResponse({ success: true, message: 'Movimiento eliminado correctamente' });
+        this.responseHandler.handleResponse({ success: true, message: 'Movimiento eliminado correctamente' });
       },
       error: err => {
-        this.handleResponse({ success: false, message: err?.error || 'Error eliminando el movimiento' });
+        this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error eliminando el movimiento' });
       }
     });
   }
@@ -124,17 +114,17 @@ export class MovimientoComponent {
     this.showConfirmModal = false;
   }
 
-  handleClientSave(movimiento: Movimiento) {
+  handleTransactionSave(movimiento: Movimiento) {
     const transactionReceived = { ...this.movimiento, ...movimiento };
     if (transactionReceived.id == undefined) {
       this.movimientoService.CreateTransaction(transactionReceived).subscribe({
         next: data => {
           this.movimientos.push(data);
           this.showModal = false;
-          this.handleResponse({ success: true, message: 'Movimiento creado correctamente' });
+          this.responseHandler.handleResponse({ success: true, message: 'Movimiento creado correctamente' });
         },
         error: err => {
-          this.handleResponse({ success: false, message: err?.error || 'Error creando el movimiento' });
+          this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error creando el movimiento' });
         }
       });
     } else {
@@ -145,10 +135,10 @@ export class MovimientoComponent {
             this.movimientos[index] = transactionReceived;
           }
           this.showModal = false;
-          this.handleResponse({ success: true, message: 'Movimiento actualizado correctamente' });
+          this.responseHandler.handleResponse({ success: true, message: 'Movimiento actualizado correctamente' });
         },
         error: err => {
-          this.handleResponse({ success: false, message: err?.error || 'Error actualizando el movimiento' });
+          this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error actualizando el movimiento' });
         }
       });
     }
