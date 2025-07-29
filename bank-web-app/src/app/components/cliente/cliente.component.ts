@@ -6,6 +6,7 @@ import { ModalFormComponent } from '../shared/mdoal-form/mdoal-form.component';
 import { CommonModule } from '@angular/common';
 import { MdoalConfirmationComponent } from '../shared/mdoal-confirmation/mdoal-confirmation.component';
 import { ModalMessageComponent } from '../shared/modal-message/modal-message.component';
+import { ResponseHandlerService } from '../../services/response-handler-service/response-handler.service';
 
 @Component({
   selector: 'app-cliente',
@@ -15,7 +16,7 @@ import { ModalMessageComponent } from '../shared/modal-message/modal-message.com
   styleUrl: './cliente.component.css'
 })
 export class ClienteComponent implements OnInit {
-  constructor(private clientService: ClienteService) { }
+  constructor(private clientService: ClienteService, public responseHandler: ResponseHandlerService) { }
   showModal = false;
   showConfirmModal = false;
   cliente: Cliente = {} as Cliente;
@@ -46,13 +47,6 @@ export class ClienteComponent implements OnInit {
       ]
     }
   ];
-
-  handleResponse(result: { success: boolean, message: string }) {
-    this.messageTitle = result.success ? 'Excelente' : 'Error';
-    this.message = result.message;
-    this.isError = !result.success;
-    this.showMessageModal = true;
-  }
 
   ngOnInit(): void {
     this.clientService.GetAllClients().subscribe(data => {
@@ -85,10 +79,10 @@ export class ClienteComponent implements OnInit {
       next: () => {
         this.clientes = this.clientes.filter(c => c.id !== this.cliente?.id);
         this.showConfirmModal = false;
-        this.handleResponse({ success: true, message: 'Cliente eliminado correctamente' });
+        this.responseHandler.handleResponse({ success: true, message: 'Cliente eliminado correctamente' });
       },
       error: err => {
-        this.handleResponse({ success: false, message: err?.error || 'Error al eliminar el cliente' });
+        this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error al eliminar el cliente' });
       }
     });
   }
@@ -105,10 +99,10 @@ export class ClienteComponent implements OnInit {
         next: data => {
           this.clientes.push(data);
           this.showModal = false;
-          this.handleResponse({ success: true, message: 'Cliente creado correctamente' });
+          this.responseHandler.handleResponse({ success: true, message: 'Cliente creado correctamente' });
         },
         error: err => {
-          this.handleResponse({ success: false, message: err?.error || 'Error al crear el cliente' });
+          this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error al crear el cliente' });
         }
       });
     } else {
@@ -119,10 +113,10 @@ export class ClienteComponent implements OnInit {
             this.clientes[index] = clientReceived;
           }
           this.showModal = false;
-          this.handleResponse({ success: true, message: 'Cliente modificado correctamente' });
+          this.responseHandler.handleResponse({ success: true, message: 'Cliente modificado correctamente' });
         },
         error: err => {
-          this.handleResponse({ success: false, message: err?.error || 'Error al modificar el cliente' });
+          this.responseHandler.handleResponse({ success: false, message: err?.error || 'Error al modificar el cliente' });
         }
       });
     }
